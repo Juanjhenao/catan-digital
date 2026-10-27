@@ -2,6 +2,12 @@
 
 **Implementación completa del juego de mesa Catan en TypeScript**, con tablero 3D dibujado por código, bots con tres niveles de dificultad y partidas multijugador en red local con servidor autoritativo.
 
+### ▶ [Jugar en el navegador](https://juanjhenao.github.io/catan-digital/)
+
+Sin instalar nada: partida local contra bots o por turnos en el mismo dispositivo. El modo en red local necesita el servidor del repositorio (`npm run lan`).
+
+![Partida entre cuatro bots](docs/demo.gif)
+
 ![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript&logoColor=white)
 ![Vite](https://img.shields.io/badge/Vite-5-646CFF?logo=vite&logoColor=white)
 ![Vitest](https://img.shields.io/badge/tests-243_en_verde-2ea44f?logo=vitest&logoColor=white)
