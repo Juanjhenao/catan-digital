@@ -1,96 +1,99 @@
-# Colonos — Catan digital
+# Colonos — Digital Catan
 
-**Implementación completa del juego de mesa Catan en TypeScript**, con tablero 3D dibujado por código, bots con tres niveles de dificultad y partidas multijugador en red local con servidor autoritativo.
+**A complete implementation of the Catan board game in TypeScript**, with a procedurally drawn 3D board, bots at three difficulty levels and local-network multiplayer with an authoritative server.
 
-### ▶ [Jugar en el navegador](https://juanjhenao.github.io/catan-digital/)
+### ▶ [Play in your browser](https://juanjhenao.github.io/catan-digital/)
 
-Sin instalar nada: partida local contra bots o por turnos en el mismo dispositivo. El modo en red local necesita el servidor del repositorio (`npm run lan`).
+No install needed: play against bots or hot-seat on the same device. Local-network multiplayer needs the server from this repo (`npm run lan`).
 
-![Partida entre cuatro bots](docs/demo.gif)
+![Match between four bots](docs/demo.gif)
 
 ![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript&logoColor=white)
 ![Vite](https://img.shields.io/badge/Vite-5-646CFF?logo=vite&logoColor=white)
-![Vitest](https://img.shields.io/badge/tests-243_en_verde-2ea44f?logo=vitest&logoColor=white)
+![Vitest](https://img.shields.io/badge/tests-243_passing-2ea44f?logo=vitest&logoColor=white)
+
+> **Language note:** the in-game UI and code comments are in Spanish. This README and all code identifiers are in English.
 
 ---
 
-## Funcionalidades
+## Features
 
-- **Reglas completas del juego base**: colocación en serpiente, producción, escasez del banco, el 7 con descarte y ladrón, las cinco cartas de desarrollo con sus restricciones, comercio marítimo 4:1 / 3:1 / 2:1, comercio entre jugadores, ruta más larga y mayor ejército con desempate.
-- **Extensión de 5-6 jugadores**: tablero de 30 casillas, 11 puertos y mazo ampliado.
-- **Multijugador en red local**: un equipo levanta el servidor, los demás entran desde el navegador con un código de sala de cuatro letras. Reconexión automática al mismo asiento.
-- **Modo local por turnos** con escudo de privacidad entre jugadores.
-- **Bots** fácil, normal y difícil que rellenan asientos vacíos.
-- **Tablero 3D con cámara libre** (girar, zoom al cursor, desplazar), construcción pulsando el mapa con pieza fantasma, dados 3D, chat, reloj de jugada y sonido sintetizado.
-- **Cero assets**: ni una imagen ni un archivo de audio. Todo se dibuja con canvas y SVG, y todo suena con Web Audio.
+- **Full base-game rules**: snake-order setup, production, bank scarcity, the 7 with discards and the robber, all five development cards with their restrictions, 4:1 / 3:1 / 2:1 maritime trade, player-to-player trading, longest road and largest army with tie-breaking.
+- **5–6 player extension**: 30-tile board, 11 harbors and an expanded deck.
+- **Local-network multiplayer**: one machine hosts, everyone else joins from a browser with a four-letter room code. Automatic reconnection to the same seat.
+- **Hot-seat mode** with a privacy shield between players.
+- **Easy, normal and hard bots** that fill empty seats.
+- **3D board with a free camera** (orbit, zoom-to-cursor, pan), click-to-build with ghost-piece preview, 3D dice, chat, a move timer and synthesized sound.
+- **Zero assets**: not a single image or audio file. Everything is drawn with canvas and SVG, and every sound comes from Web Audio.
 
-## Stack
+## Tech stack
 
-| Capa | Tecnología |
+| Layer | Technology |
 |---|---|
-| Lenguaje | TypeScript 5 (estricto), ES2022 |
-| Build y dev server | Vite 5 |
-| Render | Canvas 2D con proyección 3D propia, SVG |
-| Audio | Web Audio API (osciladores y ruido filtrado) |
-| Red | WebSocket (`ws`) sobre el mismo puerto HTTP que sirve el juego |
-| Pruebas | Vitest, jsdom, node-canvas, fuzzing con `tsx` |
+| Language | TypeScript 5 (strict), ES2022 |
+| Build & dev server | Vite 5 |
+| Rendering | Canvas 2D with a custom 3D projection, SVG |
+| Audio | Web Audio API (oscillators and filtered noise) |
+| Networking | WebSocket (`ws`) on the same HTTP port that serves the game |
+| Testing | Vitest, jsdom, node-canvas, fuzzing with `tsx` |
+| Deployment | GitHub Actions → GitHub Pages (tests gate every deploy) |
 
-## Aspectos técnicos destacados
+## Technical highlights
 
-### 1. Motor de reglas puro y determinista
-`src/engine/` no toca el DOM, no llama a `Math.random` ni mira el reloj. Su interfaz es la de un reductor:
+### 1. Pure, deterministic rules engine
+`src/engine/` never touches the DOM, never calls `Math.random` and never reads the clock. Its interface is a reducer:
 
 ```ts
-const state  = createGame(players, { seed });      // partida determinista
-const moves  = getLegalActions(state, playerId);   // todo lo que puede hacer
-const result = applyAction(state, moves[0]);       // (estado, acción) -> estado
+const state  = createGame(players, { seed });      // deterministic match
+const moves  = getLegalActions(state, playerId);   // everything they can do
+const result = applyAction(state, moves[0]);       // (state, action) -> state
 ```
 
-El azar vive dentro del estado (generador mulberry32 con semilla), así que una partida se reconstruye entera a partir de la semilla y la lista de acciones. Esa forma hizo que los bots y la red salieran casi gratis: un bot es una función que elige entre acciones legales, y el servidor revalida cada jugada con el mismo `validate()` que usa el cliente, sin lógica duplicada. → [`src/engine/`](src/engine)
+Randomness lives inside the state (a seeded mulberry32 generator), so a whole match can be rebuilt from the seed plus the action list. That shape made bots and networking almost free: a bot is just a function that picks among legal actions, and the server re-validates every move with the same `validate()` the client uses — no duplicated logic. → [`src/engine/`](src/engine)
 
-### 2. Servidor autoritativo con censura del estado por jugador
-Los clientes solo *proponen* jugadas. Antes de enviar el estado a cada jugador, el servidor le quita lo que no le corresponde ver: las manos ajenas, las cartas de desarrollo ajenas, el orden del mazo y **el estado del generador de azar**, que permitiría calcular todas las tiradas futuras. Lo censurado se deja vacío, no falso, y los recuentos públicos viajan aparte. Un test revisa que ningún campo secreto nuevo se escape. → [`src/net/redact.ts`](src/net/redact.ts), [`server/room.ts`](server/room.ts)
+### 2. Authoritative server with per-player state redaction
+Clients only *propose* moves. Before sending state to each player, the server strips what that player isn't allowed to see: other players' hands, other players' development cards, the deck order, and **the RNG state**, which would let anyone compute every future dice roll. Redacted fields are left empty rather than faked, and public counts travel separately. A test guards against any new secret field leaking. → [`src/net/redact.ts`](src/net/redact.ts), [`server/room.ts`](server/room.ts)
 
-### 3. Geometría hexagonal sin coma flotante
-En lugar de calcular esquinas en `float` y decidir con un epsilon si dos coinciden, se usa una rejilla **entera** duplicada (`X = 2q + r, Y = 3r`): dos hexágonos vecinos producen literalmente el mismo par para la esquina que comparten, así que la identidad de un cruce es igualdad de enteros. Los puertos no están codificados a mano: se recorre el perímetro siguiendo las aristas de un solo hexágono y se reparten a intervalos parejos, y el mismo código sirve para los dos tableros. → [`src/engine/hex.ts`](src/engine/hex.ts), [`src/engine/board.ts`](src/engine/board.ts)
+### 3. Hex geometry without floating point
+Instead of computing corners as floats and deciding with an epsilon whether two of them match, the board uses a doubled **integer** grid (`X = 2q + r, Y = 3r`): neighboring hexes produce literally the same pair for a shared corner, so vertex identity is plain integer equality. Harbors aren't hand-placed: the code walks the island's perimeter along single-hex edges and spaces them evenly, and the same code serves both board sizes. → [`src/engine/hex.ts`](src/engine/hex.ts), [`src/engine/board.ts`](src/engine/board.ts)
 
-### 4. Pruebas por invariantes, fuzzing y la interfaz real
-243 tests en 12 archivos. Los que más valen no son los unitarios:
-- **Fuzzer de auto-juego**: bots aleatorios juegan partidas completas de 2 a 6 jugadores y en cada acción se verifica que banco + manos = total inicial, que no hay cantidades negativas, que las piezas cuadran, que la ruta guardada coincide con recalcularla y que nunca hay dos edificios contiguos.
-- **Torneos entre bots**: comprueban que las dificultades significan algo (difícil le gana a normal, y normal a fácil).
-- **Interfaz pulsando de verdad**: con jsdom y un canvas simulado se juega una partida entera a través de los botones.
-- **Red de extremo a extremo** con servidor y clientes WebSocket reales.
+### 4. Invariant-based testing, fuzzing and the real UI
+243 tests across 12 files. The most valuable ones aren't unit tests:
+- **Self-play fuzzer**: random bots play full 2–6 player matches, checking after every action that bank + hands = initial total, no counts go negative, pieces add up, the stored longest road matches a recomputation from scratch, and no two buildings are ever adjacent.
+- **Bot tournaments**: verify that difficulty levels mean something (hard beats normal, normal beats easy).
+- **Clicking through the real UI**: with jsdom and a mocked canvas, a full match is played through the buttons.
+- **End-to-end networking** with a real server and real WebSocket clients.
 
-## Ejecutar
+## Getting started
 
-Requiere Node.js 18+.
+Requires Node.js 18+.
 
 ```bash
 npm install
-npm run dev        # partida local en http://localhost:5173
-npm run lan        # compila y levanta el servidor para jugar en red local
+npm run dev        # local match at http://localhost:5173
+npm run lan        # build and start the server for local-network play
 npm test           # 243 tests
-npm run fuzz 500   # 500 partidas de bots comprobando invariantes
-npm run build      # build de producción en dist/
+npm run fuzz 500   # 500 bot matches checking invariants
+npm run build      # production build in dist/
 ```
 
-> **Alcance de la red**: está pensada para una red de confianza. El tráfico va en claro y el único control de acceso es el código de sala; no conviene exponerla a internet tal cual.
+> **Network scope:** designed for a trusted network. Traffic is unencrypted and the only access control is the room code; don't expose it to the internet as-is.
 
-## Estructura
+## Project structure
 
 ```
 src/
-  engine/   motor de reglas: TypeScript puro, sin DOM ni azar externo
-  ai/       contrato de bot, bots aleatorio y heurístico, auto-juego
-  net/      protocolo, censura del estado y cliente WebSocket con reconexión
-  ui/       escena 3D, arte procedural, sonido y controlador de partida
-server/     HTTP + WebSocket en el mismo puerto; salas y partida autoritativa
-tools/      render del tablero a PNG sin navegador, fuzzer y torneos de bots
-tests/      reglas, tablero, bots, interfaz y red
+  engine/   rules engine: pure TypeScript, no DOM, no external randomness
+  ai/       bot contract, random and heuristic bots, self-play loop
+  net/      protocol, state redaction and WebSocket client with reconnection
+  ui/       3D scene, procedural art, sound and match controller
+server/     HTTP + WebSocket on one port; rooms and the authoritative match
+tools/      headless board-to-PNG rendering, fuzzer and bot tournaments
+tests/      rules, board, bots, UI and networking
 ```
 
-El documento de diseño completo, con todas las decisiones de reglas e interfaz, está en [`docs/DISENO.md`](docs/DISENO.md).
+The full design document, covering every rules and UI decision, is in [`docs/DISENO.md`](docs/DISENO.md) (in Spanish).
 
 ---
 
-*Proyecto personal sin fines comerciales. No está afiliado ni respaldado por Catan GmbH; «Catan» es una marca registrada de sus respectivos dueños.*
+*Non-commercial personal project. Not affiliated with or endorsed by Catan GmbH; "Catan" is a trademark of its respective owners.*
