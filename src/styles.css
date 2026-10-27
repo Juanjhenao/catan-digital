@@ -1,0 +1,1727 @@
+/* ==========================================================================
+   Colonos - hoja de estilo unica
+   Paleta: mesa de madera oscura, paneles de pergamino, acentos por jugador.
+   ========================================================================== */
+
+:root {
+  --wood-deep: #1a120b;
+  --wood: #2a1d12;
+  --wood-light: #3a291a;
+  --parchment: #f4e9d2;
+  --parchment-dim: #ddd0b4;
+  --ink: #2c2015;
+  --ink-soft: #6b5940;
+  --gold: #d9a441;
+  --gold-dim: #a67c2c;
+  --danger: #c0392b;
+  --ok: #3aa76d;
+  --radius: 12px;
+  --radius-sm: 8px;
+  --shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+  --shadow-sm: 0 3px 10px rgba(0, 0, 0, 0.35);
+  --font-display: 'Georgia', 'Iowan Old Style', serif;
+  --font-body: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  font-family: var(--font-body);
+  color: var(--parchment);
+  background: radial-gradient(circle at 50% 0%, #3a291a 0%, var(--wood-deep) 70%);
+  overflow: hidden;
+}
+
+#app,
+.screen {
+  height: 100%;
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* --------------------------------------------------------------------------
+   Botones y controles
+   -------------------------------------------------------------------------- */
+
+/*
+ * Los botones son piezas con relieve: filo claro arriba, sombra propia y un
+ * hundimiento real al pulsarlos. El borde interior claro (`inset`) es lo que
+ * los separa del fondo de madera sin recurrir a un contorno grueso.
+ */
+.btn {
+  position: relative;
+  font: inherit;
+  font-weight: 600;
+  padding: 0.55rem 0.95rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(0, 0, 0, 0.45);
+  background: linear-gradient(180deg, #f0be62 0%, var(--gold) 42%, #a9752a 100%);
+  color: #2a1a04;
+  cursor: pointer;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.55),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.22),
+    0 2px 0 rgba(0, 0, 0, 0.35),
+    0 4px 10px rgba(0, 0, 0, 0.4);
+  transition:
+    transform 0.09s ease,
+    box-shadow 0.09s ease,
+    filter 0.15s ease;
+  white-space: nowrap;
+}
+
+.btn:hover:not(:disabled) {
+  filter: brightness(1.07) saturate(1.05);
+  transform: translateY(-1px);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.6),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.22),
+    0 3px 0 rgba(0, 0, 0, 0.35),
+    0 7px 14px rgba(0, 0, 0, 0.45);
+}
+
+.btn:active:not(:disabled) {
+  transform: translateY(2px);
+  box-shadow:
+    inset 0 2px 4px rgba(0, 0, 0, 0.35),
+    0 0 0 rgba(0, 0, 0, 0.35);
+}
+
+.btn:focus-visible {
+  outline: 2px solid #ffe6a8;
+  outline-offset: 2px;
+}
+
+.btn:disabled {
+  opacity: 0.42;
+  cursor: not-allowed;
+  filter: grayscale(0.6);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.btn--ghost {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.13), rgba(255, 255, 255, 0.05));
+  color: var(--parchment);
+  border-color: rgba(255, 255, 255, 0.18);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.16),
+    0 2px 0 rgba(0, 0, 0, 0.3),
+    0 4px 10px rgba(0, 0, 0, 0.35);
+}
+
+.btn--danger {
+  background: linear-gradient(180deg, #ef6a58 0%, #d8503f 42%, #92291d 100%);
+  color: #fff;
+}
+
+.btn--wide {
+  width: 100%;
+}
+
+input[type='text'],
+input[type='number'],
+select {
+  font: inherit;
+  padding: 0.45rem 0.6rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(0, 0, 0, 0.4);
+  background: rgba(255, 255, 255, 0.9);
+  color: var(--ink);
+  min-width: 0;
+}
+
+/* --------------------------------------------------------------------------
+   Pantalla de configuracion
+   -------------------------------------------------------------------------- */
+
+.setup {
+  display: grid;
+  place-items: center;
+  padding: 2rem 1rem;
+  overflow: auto;
+}
+
+.setup__card {
+  width: min(760px, 100%);
+  background: linear-gradient(180deg, rgba(58, 41, 26, 0.96), rgba(30, 21, 13, 0.96));
+  border: 1px solid rgba(217, 164, 65, 0.3);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 2rem;
+}
+
+.setup__title {
+  font-family: var(--font-display);
+  font-size: 2.4rem;
+  margin: 0 0 0.15rem;
+  color: var(--gold);
+  letter-spacing: 0.02em;
+}
+
+.setup__subtitle {
+  margin: 0 0 1.6rem;
+  color: var(--parchment-dim);
+  font-size: 0.95rem;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin-bottom: 1rem;
+}
+
+.field__label {
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--parchment-dim);
+}
+
+.setup__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1rem;
+}
+
+.player-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin: 0.5rem 0 1.25rem;
+}
+
+.player-row {
+  display: grid;
+  grid-template-columns: 2.2rem 1fr auto auto;
+  gap: 0.6rem;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.25);
+  padding: 0.5rem 0.6rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+/* Casilla de «recordar mi nombre», en las dos pantallas de configuracion. */
+.check {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.88rem;
+  color: var(--parchment-dim);
+  cursor: pointer;
+  user-select: none;
+  margin: 0 0 1.25rem;
+}
+
+/* Pegada a las filas de jugadores: la casilla habla de una de ellas, no del
+   formulario entero, y el hueco de 1.25rem la desvincularia. */
+.player-rows + .check {
+  margin-top: -0.75rem;
+}
+
+.check input {
+  width: 1.05rem;
+  height: 1.05rem;
+  accent-color: var(--gold);
+  cursor: pointer;
+  flex: none;
+}
+
+.swatch {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  border: 2px solid rgba(0, 0, 0, 0.45);
+  box-shadow: inset 0 -3px 6px rgba(0, 0, 0, 0.35);
+}
+
+.tag {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 0.18rem 0.5rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--parchment-dim);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.note {
+  font-size: 0.85rem;
+  color: var(--parchment-dim);
+  line-height: 1.5;
+  background: rgba(0, 0, 0, 0.22);
+  border-left: 3px solid var(--gold);
+  padding: 0.7rem 0.9rem;
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  margin: 0 0 1.25rem;
+}
+
+/* --------------------------------------------------------------------------
+   Estructura de la pantalla de juego
+   -------------------------------------------------------------------------- */
+
+.game {
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.5rem 1rem;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.2));
+  border-bottom: 1px solid rgba(217, 164, 65, 0.22);
+}
+
+.topbar__brand {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  color: var(--gold);
+}
+
+.brand__mark {
+  width: 1.1rem;
+  height: 1.25rem;
+  background: var(--gold);
+  clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+}
+
+.topbar__right {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.turn-banner {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-weight: 600;
+  padding: 0.35rem 0.9rem;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  min-height: 2.2rem;
+}
+
+.turn-banner__dot {
+  width: 0.85rem;
+  height: 0.85rem;
+  border-radius: 50%;
+  border: 2px solid rgba(0, 0, 0, 0.4);
+}
+
+/*
+ * Reloj de la jugada. Vive en la barra de turno porque es donde ya se mira
+ * para saber a quien le toca; separarlo obligaria a vigilar dos sitios.
+ */
+.turn-clock {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  margin-left: 0.5rem;
+  padding: 0.16rem 0.5rem;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.42);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  color: var(--parchment-dim);
+  font-variant-numeric: tabular-nums;
+  font-size: 0.84rem;
+}
+
+.turn-clock b {
+  color: var(--parchment);
+  font-weight: 700;
+}
+
+.turn-clock--off {
+  opacity: 0.45;
+}
+
+/* Los ultimos diez segundos se avisan en rojo y con pulso. */
+.turn-clock--low {
+  background: rgba(150, 34, 24, 0.55);
+  border-color: #e0563f;
+  color: #ffcabb;
+  animation: clock-warn 1s ease-in-out infinite;
+}
+
+.turn-clock--low b {
+  color: #fff;
+}
+
+@keyframes clock-warn {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(224, 86, 63, 0.55);
+  }
+  60% {
+    box-shadow: 0 0 0 0.4rem rgba(224, 86, 63, 0);
+  }
+}
+
+.icon {
+  flex: none;
+  display: block;
+}
+
+.turn-banner__phase {
+  color: var(--parchment-dim);
+  font-weight: 500;
+  font-size: 0.88rem;
+}
+
+.table {
+  display: grid;
+  /* Tablero a la izquierda y marcador a la derecha. El chat ya no pide columna:
+     flota sobre el lienzo, asi que el tablero se queda con todo lo que sobra. */
+  grid-template-columns: 1fr minmax(260px, 320px);
+  min-height: 0;
+}
+
+.board-wrap {
+  position: relative;
+  min-width: 0;
+  min-height: 0;
+}
+
+#board {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.board-hint {
+  position: absolute;
+  left: 50%;
+  top: 0.75rem;
+  transform: translateX(-50%);
+  background: rgba(20, 14, 8, 0.88);
+  border: 1px solid var(--gold);
+  color: var(--parchment);
+  padding: 0.5rem 1rem;
+  border-radius: 999px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  box-shadow: var(--shadow-sm);
+  pointer-events: none;
+  max-width: 90%;
+  text-align: center;
+}
+
+.board-hint:empty {
+  display: none;
+}
+
+/* --------------------------------------------------------------------------
+   Barra lateral: jugadores y registro
+   -------------------------------------------------------------------------- */
+
+.sidebar {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  gap: 0.6rem;
+  padding: 0.6rem;
+  background: rgba(0, 0, 0, 0.28);
+  border-left: 1px solid rgba(255, 255, 255, 0.07);
+  min-height: 0;
+}
+
+.players {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.player-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  padding: 0.5rem 0.6rem;
+  border-radius: var(--radius-sm);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.03));
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-left: 4px solid var(--player-color, #888);
+  transition: background 0.2s ease;
+}
+
+.player-card--active {
+  background: rgba(217, 164, 65, 0.16);
+  border-color: rgba(217, 164, 65, 0.5);
+  border-left-color: var(--player-color, #888);
+}
+
+.player-card__head {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.player-card__name {
+  font-weight: 700;
+  font-size: 0.94rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.player-card__vp {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 0.22rem;
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--gold);
+  line-height: 1;
+}
+
+/*
+ * Marcador del jugador: una fila de icono + numero por cada cosa publica que
+ * conviene poder comparar de un vistazo entre rivales.
+ */
+.player-stats {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  flex-wrap: wrap;
+}
+
+.pstat {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.16rem;
+  padding: 0.12rem 0.3rem;
+  border-radius: 5px;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  color: var(--parchment-dim);
+  font-size: 0.78rem;
+  line-height: 1;
+}
+
+.pstat b {
+  color: var(--parchment);
+  font-size: 0.82rem;
+}
+
+/* Quien tiene la ruta mas larga o el mayor ejercito lo lleva en dorado. */
+.pstat--on {
+  background: rgba(217, 164, 65, 0.24);
+  border-color: var(--gold);
+  color: var(--gold);
+}
+
+.pstat--on b {
+  color: #ffe9b8;
+}
+
+.pstat__sep {
+  width: 1px;
+  align-self: stretch;
+  margin: 0.1rem 0.1rem;
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.badge {
+  font-size: 0.68rem;
+  padding: 0.1rem 0.35rem;
+  border-radius: 4px;
+  background: rgba(217, 164, 65, 0.22);
+  border: 1px solid rgba(217, 164, 65, 0.4);
+  color: var(--gold);
+  white-space: nowrap;
+}
+
+.log {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  min-height: 0;
+  background: rgba(0, 0, 0, 0.25);
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.log__title {
+  margin: 0;
+  padding: 0.5rem 0.7rem 0.35rem;
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  color: var(--gold);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.log__list {
+  margin: 0;
+  padding: 0.5rem 0.7rem;
+  list-style: none;
+  overflow-y: auto;
+  font-size: 0.82rem;
+  line-height: 1.45;
+  display: flex;
+  flex-direction: column;
+  gap: 0.28rem;
+}
+
+.log__entry {
+  color: var(--parchment-dim);
+}
+.log__entry strong {
+  color: var(--parchment);
+}
+.log__entry--dice {
+  color: #eddba0;
+}
+.log__entry--robber {
+  color: #e79a8c;
+}
+.log__entry--build {
+  color: #a9d6b4;
+}
+.log__entry--trade {
+  color: #a8c8e8;
+}
+.log__entry--victory {
+  color: var(--gold);
+  font-weight: 600;
+}
+
+/* --------------------------------------------------------------------------
+   Barra inferior: mano y acciones
+   -------------------------------------------------------------------------- */
+
+/*
+ * La barra inferior tiene ALTURA FIJA, no minima.
+ *
+ * Su contenido cambia con la fase (los botones no son los mismos al tirar que
+ * al construir, y las cartas de desarrollo van y vienen). Con una altura
+ * elastica el tablero se encogia y se estiraba a cada turno, y con el la
+ * camara: basta un boton de mas para que se mueva la escena entera.
+ */
+.handbar {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 1rem;
+  align-items: center;
+  padding: 0.55rem 1rem;
+  background: linear-gradient(0deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.2));
+  border-top: 1px solid rgba(217, 164, 65, 0.22);
+  height: 7.6rem;
+  overflow: hidden;
+}
+
+.hand {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  flex-wrap: nowrap;
+  min-width: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: thin;
+}
+
+/* Un bloque de la mano: los recursos, o las cartas de desarrollo. */
+.hand__group {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  flex: none;
+  padding: 0.25rem 0.55rem 0.25rem 0.4rem;
+  border-radius: var(--radius-sm);
+  background: rgba(0, 0, 0, 0.26);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.hand__group--empty {
+  opacity: 0.55;
+}
+
+.hand__count {
+  font-size: 0.7rem;
+  color: var(--parchment-dim);
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  letter-spacing: 0.04em;
+  max-height: 4.4rem;
+}
+
+.hand__cards {
+  display: flex;
+  gap: 0.4rem;
+}
+
+/* --------------------------------------------------------------------------
+   Cartas de desarrollo en la mano
+   -------------------------------------------------------------------------- */
+
+.dcard-btn {
+  background: none;
+  border: 2px solid transparent;
+  border-radius: 12px;
+  padding: 2px;
+  cursor: pointer;
+  transition:
+    transform 130ms ease,
+    border-color 130ms ease;
+}
+
+.dcard-btn:hover:not(:disabled) {
+  transform: translateY(-0.28rem);
+  border-color: rgba(255, 226, 150, 0.75);
+}
+
+.dcard-btn:active:not(:disabled) {
+  transform: translateY(-0.1rem) scale(0.97);
+}
+
+.dcard-btn:disabled {
+  cursor: default;
+}
+
+.dcard-btn:disabled .dcard {
+  filter: grayscale(0.7) brightness(0.72);
+}
+
+.dcard {
+  position: relative;
+  width: 3.3rem;
+  height: 3.9rem;
+  border-radius: 9px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.15rem;
+  color: #fdf6e6;
+  border: 1px solid rgba(0, 0, 0, 0.5);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.32),
+    0 3px 5px rgba(0, 0, 0, 0.45);
+  background: linear-gradient(160deg, #6b5aa8 0%, #43356f 100%);
+}
+
+.dcard__name {
+  font-size: 0.56rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  text-align: center;
+  line-height: 1;
+  padding: 0 0.15rem;
+}
+
+.dcard__count {
+  position: absolute;
+  top: -0.28rem;
+  right: -0.28rem;
+  min-width: 1.15rem;
+  height: 1.15rem;
+  padding: 0 0.22rem;
+  border-radius: 999px;
+  background: #16100a;
+  border: 1.5px solid var(--gold);
+  color: var(--parchment);
+  font-size: 0.68rem;
+  font-weight: 700;
+  display: grid;
+  place-items: center;
+  line-height: 1;
+}
+
+/* Cada tipo con su color, para reconocerlas sin leer. */
+.dcard--knight {
+  background: linear-gradient(160deg, #c4553f 0%, #7d2a1c 100%);
+}
+.dcard--roadBuilding {
+  background: linear-gradient(160deg, #9a7245 0%, #5d4023 100%);
+}
+.dcard--yearOfPlenty {
+  background: linear-gradient(160deg, #56a86f 0%, #2a6b41 100%);
+}
+.dcard--monopoly {
+  background: linear-gradient(160deg, #7b5fb0 0%, #453072 100%);
+}
+.dcard--victoryPoint {
+  background: linear-gradient(160deg, #dfae4c 0%, #8f6420 100%);
+  color: #2a1a04;
+}
+
+/* --------------------------------------------------------------------------
+   Cartas de recurso
+   La lamina la dibuja `cards.ts` en un canvas, con el mismo arte que el
+   tablero; aqui va solo lo que envuelve: chapa, pie, estados y animaciones.
+   -------------------------------------------------------------------------- */
+
+.rcard {
+  position: relative;
+  display: inline-flex;
+  line-height: 0;
+  border-radius: 10px;
+  filter: drop-shadow(0 3px 5px rgba(0, 0, 0, 0.45));
+  transition:
+    transform 140ms ease,
+    filter 140ms ease;
+}
+
+.rcard__art {
+  display: block;
+  border-radius: 10px;
+}
+
+.rcard__back {
+  display: grid;
+  place-items: center;
+  border-radius: 10px;
+  background: repeating-linear-gradient(45deg, #4a3a22 0 6px, #3a2a18 6px 12px);
+  color: var(--gold-dim);
+  font: 700 1.3rem var(--font-display);
+  line-height: 1;
+  border: 1px solid rgba(0, 0, 0, 0.55);
+}
+
+.rcard__count {
+  position: absolute;
+  top: -0.3rem;
+  left: -0.3rem;
+  min-width: 1.25rem;
+  height: 1.25rem;
+  padding: 0 0.25rem;
+  border-radius: 999px;
+  background: #1b120a;
+  border: 1.5px solid var(--gold);
+  color: var(--parchment);
+  font-size: 0.74rem;
+  font-weight: 700;
+  line-height: 1;
+  display: grid;
+  place-items: center;
+}
+
+.rcard__footer {
+  position: absolute;
+  left: 50%;
+  bottom: -0.15rem;
+  transform: translateX(-50%);
+  background: rgba(16, 10, 5, 0.88);
+  border: 1px solid rgba(217, 164, 65, 0.5);
+  color: var(--parchment);
+  font-size: 0.62rem;
+  font-weight: 700;
+  line-height: 1;
+  padding: 0.12rem 0.3rem;
+  border-radius: 5px;
+  white-space: nowrap;
+}
+
+.rcard--empty {
+  opacity: 0.34;
+  filter: grayscale(0.75);
+}
+
+/* La carta parpadea sola cuando su cuenta acaba de cambiar. */
+.rcard--bump {
+  animation: rcard-bump 620ms ease;
+}
+
+/* Entrada de una carta que se pone sobre la mesa de intercambio. */
+.rcard--deal {
+  animation: rcard-deal 260ms cubic-bezier(0.2, 1.5, 0.4, 1);
+}
+
+@keyframes rcard-bump {
+  0% {
+    transform: none;
+  }
+  28% {
+    transform: translateY(-0.5rem) scale(1.12);
+    filter: drop-shadow(0 8px 12px rgba(255, 214, 120, 0.55));
+  }
+  100% {
+    transform: none;
+  }
+}
+
+@keyframes rcard-deal {
+  from {
+    transform: translateY(0.9rem) scale(0.7) rotate(-8deg);
+    opacity: 0;
+  }
+  to {
+    transform: none;
+    opacity: 1;
+  }
+}
+
+/* Carta pulsable: cualquier selector de recurso del juego. */
+.rcard-btn {
+  background: none;
+  border: 2px solid transparent;
+  border-radius: 13px;
+  padding: 3px;
+  cursor: pointer;
+  line-height: 0;
+  transition:
+    transform 130ms ease,
+    border-color 130ms ease,
+    background 130ms ease;
+}
+
+.rcard-btn:hover:not(:disabled) {
+  transform: translateY(-0.28rem);
+  background: rgba(255, 226, 150, 0.12);
+}
+
+.rcard-btn:active:not(:disabled) {
+  transform: translateY(-0.1rem) scale(0.97);
+}
+
+.rcard-btn--on {
+  border-color: var(--gold);
+  background: rgba(217, 164, 65, 0.22);
+}
+
+.rcard-btn:disabled {
+  cursor: not-allowed;
+}
+
+.rcard-btn:disabled .rcard {
+  opacity: 0.38;
+  filter: grayscale(0.8);
+}
+
+.hand__meta {
+  font-size: 0.8rem;
+  color: var(--parchment-dim);
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.actions {
+  display: flex;
+  gap: 0.5rem;
+  /* Sin salto de linea: envolver cambiaria la altura de la barra. */
+  flex-wrap: nowrap;
+  justify-content: flex-end;
+  align-items: center;
+  max-width: 34rem;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: thin;
+}
+
+.action-btn {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.12rem;
+  min-width: 5.9rem;
+  padding: 0.5rem 0.7rem 0.45rem;
+}
+
+.action-btn .icon {
+  opacity: 0.9;
+  margin-bottom: 0.05rem;
+}
+
+.action-btn__label {
+  font-size: 0.86rem;
+  line-height: 1.1;
+}
+
+.action-btn small {
+  font-size: 0.64rem;
+  font-weight: 500;
+  opacity: 0.82;
+  line-height: 1.1;
+}
+
+/* Piezas que quedan en la reserva, en la esquina del boton. */
+.action-btn__left {
+  position: absolute;
+  top: -0.4rem;
+  right: -0.4rem;
+  min-width: 1.25rem;
+  height: 1.25rem;
+  padding: 0 0.28rem;
+  border-radius: 999px;
+  background: #16100a;
+  border: 1.5px solid rgba(255, 226, 150, 0.85);
+  color: var(--parchment);
+  font-size: 0.72rem;
+  font-weight: 700;
+  line-height: 1;
+  display: grid;
+  place-items: center;
+}
+
+.action-btn:disabled .action-btn__left {
+  opacity: 0.5;
+}
+
+/* La accion que toca hacer ahora se anuncia sola. */
+.action-btn--go:not(:disabled) {
+  background: linear-gradient(180deg, #8ee0ac 0%, var(--ok) 45%, #1d7148 100%);
+  color: #06210f;
+  animation: action-call 1.8s ease-in-out infinite;
+}
+
+.action-btn--end:not(:disabled) {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.05));
+  color: var(--parchment);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+@keyframes action-call {
+  0%,
+  100% {
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.5),
+      0 2px 0 rgba(0, 0, 0, 0.35),
+      0 0 0 0 rgba(90, 220, 150, 0);
+  }
+  50% {
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.5),
+      0 2px 0 rgba(0, 0, 0, 0.35),
+      0 0 0 0.45rem rgba(90, 220, 150, 0);
+    filter: brightness(1.12);
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Capa modal y escudo de privacidad
+   -------------------------------------------------------------------------- */
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(8, 5, 3, 0.78);
+  backdrop-filter: blur(3px);
+  display: grid;
+  place-items: center;
+  z-index: 20;
+  padding: 1rem;
+}
+
+.modal {
+  width: min(620px, 100%);
+  max-height: 88vh;
+  overflow: auto;
+  background: linear-gradient(180deg, rgba(58, 41, 26, 0.99), rgba(30, 21, 13, 0.99));
+  border: 1px solid rgba(217, 164, 65, 0.35);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 1.4rem 1.5rem;
+}
+
+.modal__title {
+  font-family: var(--font-display);
+  color: var(--gold);
+  margin: 0 0 0.3rem;
+  font-size: 1.4rem;
+}
+
+.modal__text {
+  color: var(--parchment-dim);
+  font-size: 0.9rem;
+  margin: 0 0 1.1rem;
+  line-height: 1.5;
+}
+
+.modal__footer {
+  display: flex;
+  gap: 0.6rem;
+  justify-content: flex-end;
+  margin-top: 1.2rem;
+}
+
+.shield {
+  text-align: center;
+  display: grid;
+  gap: 1rem;
+  justify-items: center;
+}
+
+.shield__crest {
+  width: 5.5rem;
+  height: 6.2rem;
+  background: var(--shield-color, var(--gold));
+  clip-path: polygon(50% 0%, 100% 18%, 100% 62%, 50% 100%, 0% 62%, 0% 18%);
+  box-shadow: var(--shadow);
+  display: grid;
+  place-items: center;
+  font-family: var(--font-display);
+  font-size: 2.4rem;
+  color: rgba(0, 0, 0, 0.55);
+  font-weight: 700;
+}
+
+.shield__name {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  margin: 0;
+}
+
+/* Selectores de recurso reutilizados en descarte, monopolio y abundancia */
+
+.res-picker {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+  gap: 0.6rem;
+}
+
+.res-picker__item {
+  background: rgba(0, 0, 0, 0.28);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-sm);
+  padding: 0.6rem;
+  display: grid;
+  gap: 0.4rem;
+  justify-items: center;
+}
+
+.res-picker__item[data-selected='true'] {
+  border-color: var(--gold);
+  background: rgba(217, 164, 65, 0.18);
+}
+
+/* En los selectores la carta va sin sombra propia: ya la lleva la ficha. */
+.rcard--chip {
+  filter: none;
+}
+
+.res-picker__name {
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+.res-picker__stock {
+  font-size: 0.72rem;
+  color: var(--parchment-dim);
+}
+
+.stepper {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.stepper button {
+  width: 1.9rem;
+  height: 1.9rem;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--parchment);
+  font-size: 1.1rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.stepper button:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.stepper__value {
+  min-width: 1.6rem;
+  text-align: center;
+  font-weight: 700;
+  font-size: 1.05rem;
+}
+
+/* --------------------------------------------------------------------------
+   Mesa de intercambio
+   Dos filas con flecha: lo que sale de tu mano y lo que entra. Debajo, los
+   raíles de cartas desde los que se elige. Se pulsa la carta, no un +/-.
+   -------------------------------------------------------------------------- */
+
+.modal--trade {
+  width: min(46rem, 100%);
+}
+
+.trade-tabs {
+  display: flex;
+  gap: 0.4rem;
+  margin-bottom: 0.9rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.trade-tab {
+  font: inherit;
+  font-weight: 700;
+  font-size: 0.92rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.5rem 0.9rem;
+  border: none;
+  border-bottom: 3px solid transparent;
+  background: none;
+  color: var(--parchment-dim);
+  cursor: pointer;
+  transition:
+    color 140ms ease,
+    border-color 140ms ease;
+}
+
+.trade-tab:hover {
+  color: var(--parchment);
+}
+
+.trade-tab--on {
+  color: var(--gold);
+  border-bottom-color: var(--gold);
+}
+
+.trade-board {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin: 0.9rem 0 1.1rem;
+  padding: 0.7rem 0.8rem;
+  border-radius: var(--radius);
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(217, 164, 65, 0.22);
+}
+
+.trade-row {
+  display: grid;
+  grid-template-columns: 8.5rem 1fr;
+  align-items: center;
+  gap: 0.7rem;
+  min-height: 3.6rem;
+  padding: 0.35rem 0.5rem;
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.trade-row__tag {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-weight: 700;
+  font-size: 0.86rem;
+}
+
+.trade-arrow {
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 0.7rem;
+  color: #fff;
+  flex: none;
+}
+
+/* Rojo lo que se va de tu mano, verde lo que llega: el color es la unica
+   pista que hace falta para leer la direccion de un vistazo. */
+.trade-arrow--give {
+  background: #c0392b;
+  box-shadow: 0 0 0 2px rgba(192, 57, 43, 0.28);
+}
+
+.trade-arrow--want {
+  background: var(--ok);
+  box-shadow: 0 0 0 2px rgba(58, 167, 109, 0.28);
+}
+
+.trade-row__slots {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  align-items: center;
+  min-height: 2.9rem;
+}
+
+.trade-row__empty {
+  font-size: 0.78rem;
+  color: var(--parchment-dim);
+  opacity: 0.65;
+  font-style: italic;
+}
+
+.trade-heading {
+  margin: 0.9rem 0 0.45rem;
+  font-family: var(--font-display);
+  color: var(--gold);
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.card-rail {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  align-items: flex-end;
+}
+
+.tag--deal {
+  border-color: var(--ok);
+  color: #d8f5e6;
+  margin-right: auto;
+}
+
+.responses {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin-top: 1rem;
+}
+
+.response-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+  padding: 0.45rem 0.6rem;
+  border-radius: var(--radius-sm);
+  background: rgba(0, 0, 0, 0.25);
+  border-left: 4px solid var(--player-color, #888);
+}
+
+.rules-list {
+  font-size: 0.87rem;
+  line-height: 1.6;
+  color: var(--parchment-dim);
+}
+
+.rules-list strong {
+  color: var(--parchment);
+}
+
+/* --------------------------------------------------------------------------
+   Adaptacion a pantallas estrechas
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 1000px) {
+  .table {
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr auto;
+  }
+  .sidebar {
+    max-height: 32vh;
+    border-left: none;
+    border-top: 1px solid rgba(255, 255, 255, 0.07);
+  }
+  .handbar {
+    grid-template-columns: 1fr;
+  }
+  .actions {
+    max-width: none;
+    justify-content: flex-start;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Animaciones de interfaz
+   Todas son cortas y por entrada: nada se mueve mientras se lee. Se apagan
+   enteras si el sistema pide movimiento reducido.
+   -------------------------------------------------------------------------- */
+
+.overlay:not(.hidden) {
+  animation: fade-in 180ms ease;
+}
+
+.modal {
+  animation: modal-in 260ms cubic-bezier(0.2, 1.2, 0.35, 1);
+}
+
+.log__entry {
+  animation: log-in 320ms ease;
+}
+
+/* La ficha del jugador en turno late para que no se pierda el cambio de mano. */
+.turn-banner__dot {
+  animation: dot-pulse 2.2s ease-in-out infinite;
+}
+
+.player-card--active {
+  animation: card-glow 2.6s ease-in-out infinite;
+}
+
+.action-btn:active:not(:disabled) {
+  transform: translateY(1px) scale(0.97);
+}
+
+.btn {
+  transition:
+    transform 120ms ease,
+    background 140ms ease,
+    border-color 140ms ease;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes modal-in {
+  from {
+    opacity: 0;
+    transform: translateY(1.4rem) scale(0.94);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes log-in {
+  from {
+    opacity: 0;
+    transform: translateX(-0.7rem);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes dot-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.35);
+  }
+  50% {
+    box-shadow: 0 0 0 0.35rem rgba(255, 255, 255, 0);
+  }
+}
+
+@keyframes card-glow {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(217, 164, 65, 0);
+  }
+  50% {
+    box-shadow: 0 0 0.9rem 0 rgba(217, 164, 65, 0.28);
+  }
+}
+
+/* Quien pide menos movimiento no deberia recibir ninguno. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Partida en red local
+   --------------------------------------------------------------------------- */
+
+.setup__or {
+  margin: 1rem 0 0.6rem;
+  text-align: center;
+  color: var(--ink-soft);
+  font-size: 0.85rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.setup__error {
+  margin: 0.6rem 0 0;
+  color: #d8613f;
+  font-size: 0.9rem;
+}
+
+.room-code {
+  font-family: 'Georgia', serif;
+  letter-spacing: 0.28em;
+  color: var(--gold);
+}
+
+.lobby__seats {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin: 1rem 0;
+}
+
+.lobby__seat {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.6rem 0.8rem;
+  border-radius: 0.6rem;
+  background: rgba(0, 0, 0, 0.16);
+  border: 1px solid rgba(255, 250, 235, 0.08);
+}
+
+/* El asiento propio se marca con el color del jugador, no solo con la etiqueta:
+   es lo que se busca de un vistazo al mirar la sala. */
+.lobby__seat--me {
+  border-color: var(--player-color);
+  background: color-mix(in srgb, var(--player-color) 16%, transparent);
+}
+
+.lobby__dot {
+  width: 0.9rem;
+  height: 0.9rem;
+  border-radius: 50%;
+  background: var(--player-color);
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.35);
+  flex: none;
+}
+
+.lobby__name {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  flex: 1;
+}
+
+.net-status {
+  padding: 0.3rem 0.7rem;
+  border-radius: 999px;
+  background: rgba(216, 97, 63, 0.9);
+  color: #fff;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+
+/* ---------------------------------------------------------------------------
+   Chat
+   --------------------------------------------------------------------------- */
+
+/*
+ * El chat va sobre el lienzo, no al lado.
+ *
+ * En su propia columna le quitaba ancho al tablero, que es lo unico de esta
+ * pantalla que se aprovecha de crecer; y en pantallas estrechas habia que
+ * esconderlo entero. Flotando encima cuesta cero espacio.
+ *
+ * A cambio hay una regla que no se puede saltar: el contenedor NO recibe
+ * clics. Se le quita el raton y se le devuelve solo a la lista y a la caja de
+ * escribir. Si no, un rectangulo invisible se comeria las esquinas del tablero
+ * y no se podria construir debajo del chat.
+ */
+.chat {
+  position: absolute;
+  left: 0.75rem;
+  bottom: 0.75rem;
+  z-index: 4;
+  width: min(320px, 32%);
+  max-height: 46%;
+  display: flex;
+  flex-direction: column;
+  /* Pegado abajo: los mensajes crecen hacia arriba desde la caja de escribir. */
+  justify-content: flex-end;
+  gap: 0.35rem;
+  min-height: 0;
+  pointer-events: none;
+  /* Apagado mientras no se usa, para no competir con el tablero. */
+  opacity: 0.72;
+  transition: opacity 0.18s ease;
+}
+
+.chat:hover,
+.chat:focus-within {
+  opacity: 1;
+}
+
+.chat__head {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding-left: 0.15rem;
+}
+
+.chat__title {
+  margin: 0;
+  font-size: 0.7rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+}
+
+.chat__badge {
+  min-width: 1.1rem;
+  padding: 0 0.3rem;
+  border-radius: 999px;
+  background: var(--gold);
+  color: #2a1d09;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-align: center;
+}
+
+.chat__list {
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  padding-right: 0.2rem;
+  font-size: 0.86rem;
+  line-height: 1.35;
+  pointer-events: auto;
+  scrollbar-width: thin;
+  /* Los de arriba se desvanecen en vez de cortarse en seco contra el tablero:
+     un borde recto ahi delataria una caja que se ha querido quitar. */
+  mask-image: linear-gradient(to bottom, transparent, #000 1.6rem);
+  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 1.6rem);
+}
+
+.chat__list:empty {
+  display: none;
+}
+
+.chat__line,
+.chat__note {
+  margin: 0;
+  padding: 0.3rem 0.5rem;
+  border-radius: 0.45rem;
+  /* Sobre el tablero hace falta fondo propio: el mismo texto pasa por encima de
+     un desierto claro y de un bosque oscuro en dos lineas seguidas. */
+  background: rgba(14, 10, 6, 0.62);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  border-left: 3px solid var(--player-color, transparent);
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.3);
+  word-break: break-word;
+  /* Cada mensaje entra deslizandose: en una columna que no se mira fijamente,
+     el movimiento es lo que avisa de que hay algo nuevo. */
+  animation: chat-in 0.24s ease-out;
+}
+
+.chat__line--me {
+  background: rgba(38, 28, 14, 0.68);
+}
+
+.chat__note {
+  border-left-color: transparent;
+  background: rgba(14, 10, 6, 0.45);
+  color: var(--ink-soft);
+  font-style: italic;
+  font-size: 0.8rem;
+}
+
+.chat__who {
+  font-weight: 700;
+  color: var(--player-color, var(--ink));
+  margin-right: 0.35rem;
+}
+
+.chat__form {
+  display: flex;
+  gap: 0.3rem;
+  pointer-events: auto;
+}
+
+.chat__input {
+  flex: 1;
+  min-width: 0;
+  padding: 0.4rem 0.5rem;
+  border-radius: 0.4rem;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(10, 7, 4, 0.62);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  color: var(--ink);
+  font: inherit;
+  font-size: 0.86rem;
+}
+
+.chat__input:focus {
+  outline: none;
+  border-color: var(--gold);
+}
+
+.chat__send {
+  padding: 0 0.6rem;
+  border-radius: 0.4rem;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(10, 7, 4, 0.62);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  color: var(--ink);
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.chat__send:hover {
+  background: rgba(255, 255, 255, 0.16);
+}
+
+/* En pantallas estrechas se encoge en vez de desaparecer: ahora que no ocupa
+   columna, taparle una esquina al tablero sale mas barato que quedarse sin
+   conversacion. */
+@media (max-width: 900px) {
+  .chat {
+    width: min(240px, 52%);
+    max-height: 34%;
+  }
+}
+
+@keyframes chat-in {
+  from {
+    opacity: 0;
+    transform: translateX(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chat__line,
+  .chat__note {
+    animation: none;
+  }
+}
+
+/* El banner entra deslizandose SOLO cuando cambia de mano. En una pantalla con
+   mucho que mirar, el movimiento es lo que hace que se lea el cambio -- pero si
+   se moviera en cada repintado dejaria de significar nada. */
+.turn-banner__who--in {
+  animation: banner-in 0.28s ease-out;
+}
+
+@keyframes banner-in {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .turn-banner__who--in {
+    animation: none;
+  }
+}

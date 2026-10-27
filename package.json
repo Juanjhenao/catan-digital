@@ -1,0 +1,27 @@
+{
+  "name": "catan-digital",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "render:board": "tsx tools/render-board.ts",
+    "fuzz": "tsx tools/fuzz.ts",
+    "serve": "tsx server/index.ts",
+    "lan": "npm run build && tsx server/index.ts"
+  },
+  "devDependencies": {
+    "@types/ws": "^8.18.1",
+    "canvas": "^3.2.3",
+    "jsdom": "^29.1.1",
+    "tsx": "^4.23.12",
+    "typescript": "^5.6.3",
+    "vite": "^5.4.10",
+    "vitest": "^2.1.4",
+    "ws": "^8.21.3"
+  }
+}

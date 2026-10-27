@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Colonos &mdash; Catan digital</title>
+  </head>
+  <body>
+    <div id="app">
+      <!-- Pantalla de configuracion de partida -->
+      <section id="setup" class="screen setup"></section>
+
+      <!-- Pantalla de juego -->
+      <section id="game" class="screen game hidden">
+        <header class="topbar">
+          <div class="topbar__brand">
+            <span class="brand__mark"></span>
+            <span class="brand__name">Colonos</span>
+          </div>
+          <div id="turn-banner" class="turn-banner"></div>
+          <div id="net-status" class="net-status hidden"></div>
+          <div class="topbar__right">
+            <button id="btn-speed" class="btn btn--ghost hidden" type="button">Bots pausados</button>
+            <button id="btn-clock" class="btn btn--ghost" type="button">Reloj 30 s</button>
+            <button id="btn-sound" class="btn btn--ghost" type="button">Sonido</button>
+            <button id="btn-rules" class="btn btn--ghost" type="button">Reglas</button>
+            <button id="btn-new" class="btn btn--ghost" type="button">Nueva partida</button>
+          </div>
+        </header>
+
+        <main class="table">
+          <div class="board-wrap">
+            <canvas id="board"></canvas>
+            <div id="board-hint" class="board-hint"></div>
+            <!-- El chat va DENTRO del tablero, flotando sobre el lienzo: en su
+                 propia columna le robaba ancho a lo unico que crece bien. -->
+            <aside id="chat" class="chat"></aside>
+          </div>
+          <aside class="sidebar">
+            <div id="players" class="players"></div>
+            <div class="log">
+              <h3 class="log__title">Registro</h3>
+              <ol id="log-list" class="log__list"></ol>
+            </div>
+          </aside>
+        </main>
+
+        <footer id="handbar" class="handbar"></footer>
+      </section>
+
+      <!-- Capa para el escudo de privacidad y las ventanas modales -->
+      <div id="overlay" class="overlay hidden"></div>
+    </div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
