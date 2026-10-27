@@ -12,8 +12,6 @@ No install needed: play against bots or hot-seat on the same device. Local-netwo
 ![Vite](https://img.shields.io/badge/Vite-5-646CFF?logo=vite&logoColor=white)
 ![Vitest](https://img.shields.io/badge/tests-243_passing-2ea44f?logo=vitest&logoColor=white)
 
-> **Language note:** the in-game UI and code comments are in Spanish. This README and all code identifiers are in English.
-
 ---
 
 ## Features
@@ -92,7 +90,7 @@ tools/      headless board-to-PNG rendering, fuzzer and bot tournaments
 tests/      rules, board, bots, UI and networking
 ```
 
-The full design document, covering every rules and UI decision, is in [`docs/DISENO.md`](docs/DISENO.md) (in Spanish).
+The full design document, covering every rules and UI decision, is in [`docs/DISENO.md`](docs/DISENO.md).
 
 ---
 
