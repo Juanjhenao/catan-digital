@@ -205,20 +205,30 @@ function renderSetup(): void {
       'Empezar partida',
     ]),
 
-    el('div', { class: 'setup__or' }, ['o']),
-
-    el(
-      'button',
-      {
-        class: 'btn btn--wide btn--ghost',
-        type: 'button',
-        onclick: () => openLan({ setupEl, gameEl, overlayEl }, () => renderSetup()),
-      },
-      ['Jugar en red local'],
-    ),
-    el('p', { class: 'note' }, [
-      'Cada uno en su dispositivo, en la misma wifi. Requiere tener el servidor en marcha: npm run serve',
-    ]),
+    // La version publicada como sitio estatico no tiene servidor de partidas
+    // detras: el boton de red llevaria a una sala que nunca conecta.
+    ...(import.meta.env.VITE_PAGES
+      ? [
+          el('p', { class: 'note' }, [
+            'La partida en red local necesita su propio servidor y no esta en esta version web. ',
+            'Para jugarla, clona el repositorio y ejecuta: npm run lan',
+          ]),
+        ]
+      : [
+          el('div', { class: 'setup__or' }, ['o']),
+          el(
+            'button',
+            {
+              class: 'btn btn--wide btn--ghost',
+              type: 'button',
+              onclick: () => openLan({ setupEl, gameEl, overlayEl }, () => renderSetup()),
+            },
+            ['Jugar en red local'],
+          ),
+          el('p', { class: 'note' }, [
+            'Cada uno en su dispositivo, en la misma wifi. Requiere tener el servidor en marcha: npm run serve',
+          ]),
+        ]),
   ]);
 
   replace(setupEl, card);
